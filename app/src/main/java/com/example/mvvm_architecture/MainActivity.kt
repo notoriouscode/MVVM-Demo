@@ -2,13 +2,12 @@ package com.example.mvvm_architecture
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.mvvm_architecture.adapter.QuoteListAdapter
 import com.example.mvvm_architecture.application.Application
 import com.example.mvvm_architecture.databinding.ActivityMainBinding
 import com.example.mvvm_architecture.repository.ApiResponse
@@ -33,8 +32,14 @@ class MainActivity : AppCompatActivity() {
                 is ApiResponse.Loading -> {
                 }
                 is ApiResponse.Sucess -> {
-                    it.data?.let {
-                        binding.rvQuotes.adapter = QuoteListAdapter(it.results)
+                    it.data?.let { quoteList ->
+                        binding.rvQuotes.adapter = QuoteListAdapter(quoteList.results) {view,position->
+                            when(view.id){
+                                R.id.tv_author->{
+                                    Toast.makeText(this,"Clicked $position",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                         binding.rvQuotes.layoutManager = LinearLayoutManager(this)
                     }
                 }

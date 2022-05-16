@@ -1,16 +1,17 @@
-package com.example.mvvm_architecture
+package com.example.mvvm_architecture.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm_architecture.databinding.RecyclerviewItemBinding
 import com.example.mvvm_architecture.models.Result
-import com.example.mvvm_architecture.utils.RecyclerViewClickListener
 
-class QuoteListAdapter(private val quoteList: List<Result>) :
-    ListAdapter<Result, QuoteListAdapter.QuoteListViewHolder>(DiffUtil()) {
+class QuoteListAdapter(
+    private val quoteList: List<Result>,
+    val onClick: (view: View, position: Int) -> Unit
+) : ListAdapter<Result, QuoteListAdapter.QuoteListViewHolder>(DiffUtil()) {
 
     private lateinit var binding: RecyclerviewItemBinding
 
@@ -23,6 +24,10 @@ class QuoteListAdapter(private val quoteList: List<Result>) :
     override fun onBindViewHolder(holder: QuoteListViewHolder, position: Int) {
         val quote = quoteList[position]
         holder.bind(quote)
+        binding.tvAuthor.setOnClickListener {
+            if (holder.layoutPosition != RecyclerView.NO_POSITION)
+                onClick(it, holder.layoutPosition)
+        }
     }
 
     override fun getItemCount(): Int = quoteList.size
